@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Oeuvre index{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Oeuvre index</h1>
+
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>DateCreation</th>
+                <th>Description</th>
+                <th>DateDestruction</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for oeuvre in oeuvres %}
+            <tr>
+                <td>{{ oeuvre.id }}</td>
+                <td>{{ oeuvre.titre }}</td>
+                <td>{{ oeuvre.dateCreation ? oeuvre.dateCreation|date('Y-m-d') : '' }}</td>
+                <td>{{ oeuvre.description }}</td>
+                <td>{{ oeuvre.dateDestruction ? oeuvre.dateDestruction|date('Y-m-d') : '' }}</td>
+                <td class="text-nowrap">
+                    <a class="btn btn-info" href="{{ path('app_oeuvre_show', {'id': oeuvre.id}) }}">show</a>
+                    <a class="btn btn-warning" href="{{ path('app_oeuvre_edit', {'id': oeuvre.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary" href="{{ path('app_oeuvre_new') }}">Create new</a>
+{% endblock %}
