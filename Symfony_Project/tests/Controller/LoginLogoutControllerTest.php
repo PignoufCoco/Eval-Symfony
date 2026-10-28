@@ -80,13 +80,12 @@ final class LoginLogoutControllerTest extends WebTestCase
         self::assertSelectorExists('.alert-danger');
     }
 
-    public function testUserUsesEmailAsIdentifierAndHasTheUserRole(): void
+    public function testUserUsesEmailAsIdentifierAndKeepsOnlyAssignedRoles(): void
     {
-        $user = (new User())->setEmail('login-test@example.com')->setRoles(['ROLE_ADMIN']);
+        $user = (new User())->setEmail('login-test@example.com')->setRoles(['ROLE_BENEVOLE']);
 
         self::assertSame('login-test@example.com', $user->getUserIdentifier());
-        self::assertContains('ROLE_ADMIN', $user->getRoles());
-        self::assertContains('ROLE_USER', $user->getRoles());
+        self::assertSame(['ROLE_BENEVOLE'], $user->getRoles());
     }
 
     private function createAuthenticationClient(): KernelBrowser
@@ -94,12 +93,12 @@ final class LoginLogoutControllerTest extends WebTestCase
         $client = static::createClient();
         $client->disableReboot();
 
-        $user = new InMemoryUser('login-test@example.com', null, ['ROLE_USER']);
+        $user = new InMemoryUser('login-test@example.com', null, ['ROLE_BENEVOLE']);
         $password = static::getContainer()->get(UserPasswordHasherInterface::class)
             ->hashPassword($user, 'test-password');
 
         static::getContainer()->set('security.user.provider.concrete.app_user_provider', new InMemoryUserProvider([
-            'login-test@example.com' => ['password' => $password, 'roles' => ['ROLE_USER']],
+            'login-test@example.com' => ['password' => $password, 'roles' => ['ROLE_BENEVOLE']],
         ]));
 
         return $client;
