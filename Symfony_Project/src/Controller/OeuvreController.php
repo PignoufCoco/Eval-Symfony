@@ -78,4 +78,14 @@ final class OeuvreController extends AbstractController
 
         return $this->redirectToRoute('app_oeuvre_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/show_oeuvre_user', name: 'app_oeuvre_show_oeuvre_user', methods: ['GET'])]
+    public function show_oeuvre_user(OeuvreRepository $oeuvreRepository): Response
+    {
+        {
+            return $this->render('oeuvre/index.html.twig', [
+                'oeuvres' => $oeuvreRepository->findAll(),
+            ]);
+        }
+    }
 }
