@@ -16,6 +16,15 @@
     </head>
     <body class="bg-light">
         <main class="container py-4">
+            {% if app.user %}
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                    <span>Connecté : {{ app.user.userIdentifier }}</span>
+                    <form method="post" action="{{ path('app_logout') }}">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                        <button class="btn btn-secondary" type="submit">Se déconnecter</button>
+                    </form>
+                </div>
+            {% endif %}
             {% block body %}{% endblock %}
         </main>
     </body>
