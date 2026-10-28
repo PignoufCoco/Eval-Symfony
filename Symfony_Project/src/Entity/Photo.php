@@ -22,6 +22,14 @@ class Photo
     #[ORM\Column(length: 50)]
     private ?string $etatOeuvre = null;
 
+    #[ORM\ManyToOne(inversedBy: 'photos')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Oeuvre $oeuvre = null;
+
+    #[ORM\ManyToOne(inversedBy: 'photos')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Benevole $benevole = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +67,30 @@ class Photo
     public function setEtatOeuvre(string $etatOeuvre): static
     {
         $this->etatOeuvre = $etatOeuvre;
+
+        return $this;
+    }
+
+    public function getOeuvre(): ?Oeuvre
+    {
+        return $this->oeuvre;
+    }
+
+    public function setOeuvre(?Oeuvre $oeuvre): static
+    {
+        $this->oeuvre = $oeuvre;
+
+        return $this;
+    }
+
+    public function getBenevole(): ?Benevole
+    {
+        return $this->benevole;
+    }
+
+    public function setBenevole(?Benevole $benevole): static
+    {
+        $this->benevole = $benevole;
 
         return $this;
     }

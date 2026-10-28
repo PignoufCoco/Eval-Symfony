@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LieuRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,6 +30,17 @@ class Lieu
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 7)]
     private ?string $longitude = null;
+
+    /**
+     * @var Collection<int, Oeuvre>
+     */
+    #[ORM\OneToMany(targetEntity: Oeuvre::class, mappedBy: 'lieux')]
+    private Collection $oeuvres;
+
+    public function __construct()
+    {
+        $this->oeuvres = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -90,6 +103,36 @@ class Lieu
     public function setLongitude(string $longitude): static
     {
         $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Oeuvre>
+     */
+    public function getOeuvres(): Collection
+    {
+        return $this->oeuvres;
+    }
+
+    public function addOeuvre(Oeuvre $oeuvre): static
+    {
+        if (!$this->oeuvres->contains($oeuvre)) {
+            $this->oeuvres->add($oeuvre);
+            $oeuvre->setLieux($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOeuvre(Oeuvre $oeuvre): static
+    {
+        if ($this->oeuvres->removeElement($oeuvre)) {
+            // set the owning side to null (unless already changed)
+            if ($oeuvre->getLieux() === $this) {
+                $oeuvre->setLieux(null);
+            }
+        }
 
         return $this;
     }
