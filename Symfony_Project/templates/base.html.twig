@@ -25,18 +25,35 @@
                     </form>
                 </div>
                 {% if is_granted('ROLE_BENEVOLE') %}
-                    <nav class="d-flex flex-wrap gap-2 mb-4" aria-label="Navigation principale">
-                        {% for route, label in {
-                            app_accueil: 'Accueil',
-                            app_oeuvre_index: 'Œuvres',
-                            app_photo_index: 'Photos',
-                            app_technique_index: 'Techniques',
-                            app_artiste_index: 'Artistes',
-                            app_lieu_index: 'Lieux',
-                            app_benevole_index: 'Bénévoles'
-                        } %}
-                            <a class="btn btn-outline-primary" href="{{ path(route) }}">{{ label }}</a>
-                        {% endfor %}
+                    <nav class="navbar navbar-expand-sm bg-body-tertiary mb-4" aria-label="Navigation principale">
+                        <div class="container-fluid">
+                            <a class="navbar-brand" href="{{ path('app_accueil') }}">Accueil</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Afficher le menu">
+                                <span class="navbar-toggler-icon" aria-hidden="true"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarNav">
+                                <ul class="navbar-nav">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_oeuvre_index') }}">Œuvres</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_photo_index') }}">Photos</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_technique_index') }}">Techniques</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_artiste_index') }}">Artistes</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_lieu_index') }}">Lieux</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_benevole_index') }}">Bénévoles</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </nav>
                 {% endif %}
             {% endif %}
