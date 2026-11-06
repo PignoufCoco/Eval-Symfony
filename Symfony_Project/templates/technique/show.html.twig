@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Technique{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Technique</h1>
+
+    <table class="table table-striped table-hover align-middle">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ technique.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ technique.nom }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a class="btn btn-outline-primary mb-2" href="{{ path('app_technique_index') }}">Retour à la liste</a>
+
+    <a class="btn btn-outline-primary mb-2" href="{{ path('app_technique_edit', {'id': technique.id}) }}">Modifier</a>
+
+    {{ include('technique/_delete_form.html.twig') }}
+{% endblock %}
