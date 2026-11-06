@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un bénévole{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Modifier un bénévole</h1>
+
+    {{ include('benevole/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+
+    <a class="btn btn-outline-primary mb-2" href="{{ path('app_benevole_index') }}">Retour à la liste</a>
+
+    {{ include('benevole/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bénévoles{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Bénévoles</h1>
+
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for benevole in benevoles %}
+            <tr>
+                <td>{{ benevole.id }}</td>
+                <td>{{ benevole.nom }}</td>
+                <td>{{ benevole.prenom }}</td>
+                <td>{{ benevole.email }}</td>
+                <td>
+                    <a class="btn btn-outline-primary mb-2" href="{{ path('app_benevole_show', {'id': benevole.id}) }}">Voir</a>
+                    <a class="btn btn-outline-primary mb-2" href="{{ path('app_benevole_edit', {'id': benevole.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucun résultat.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-outline-primary mb-2" href="{{ path('app_benevole_new') }}">Ajouter</a>
+{% endblock %}
