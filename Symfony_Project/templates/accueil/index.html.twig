@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil des bénévoles{% endblock %}
+
+{% block body %}
+    <h1>Accueil des bénévoles</h1>
+    <p class="text-secondary mb-4">Choisissez une rubrique pour consulter, ajouter ou modifier ses informations.</p>
+
+    <div class="row g-3">
+        {% for rubrique in [
+            {nom: 'Œuvres', route: 'app_oeuvre_index', description: 'Titres, descriptions, dates et liens avec les artistes, techniques et lieux.'},
+            {nom: 'Photos', route: 'app_photo_index', description: 'Fichiers référencés, dates des prises de vue et état des œuvres.'},
+            {nom: 'Techniques', route: 'app_technique_index', description: 'Techniques utilisées et œuvres associées.'},
+            {nom: 'Artistes', route: 'app_artiste_index', description: 'Pseudonymes, biographies et œuvres des artistes.'},
+            {nom: 'Lieux', route: 'app_lieu_index', description: 'Adresses, quartiers et coordonnées des lieux.'},
+            {nom: 'Bénévoles', route: 'app_benevole_index', description: 'Noms, prénoms et coordonnées des bénévoles.'}
+        ] %}
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h2 class="h4">{{ rubrique.nom }}</h2>
+                        <p class="text-secondary">{{ rubrique.description }}</p>
+                        <a class="btn btn-primary mt-auto align-self-start" href="{{ path(rubrique.route) }}">Gérer les {{ rubrique.nom|lower }}</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

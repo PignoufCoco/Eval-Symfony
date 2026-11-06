@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Espace bénévoles{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
@@ -24,7 +24,25 @@
                         <button class="btn btn-secondary" type="submit">Se déconnecter</button>
                     </form>
                 </div>
+                {% if is_granted('ROLE_BENEVOLE') %}
+                    <nav class="d-flex flex-wrap gap-2 mb-4" aria-label="Navigation principale">
+                        {% for route, label in {
+                            app_accueil: 'Accueil',
+                            app_oeuvre_index: 'Œuvres',
+                            app_photo_index: 'Photos',
+                            app_technique_index: 'Techniques',
+                            app_artiste_index: 'Artistes',
+                            app_lieu_index: 'Lieux',
+                            app_benevole_index: 'Bénévoles'
+                        } %}
+                            <a class="btn btn-outline-primary" href="{{ path(route) }}">{{ label }}</a>
+                        {% endfor %}
+                    </nav>
+                {% endif %}
             {% endif %}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger" role="alert">{{ message }}</div>
+            {% endfor %}
             {% block body %}{% endblock %}
         </main>
     </body>

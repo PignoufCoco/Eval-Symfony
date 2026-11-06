@@ -32,10 +32,10 @@ final class LoginLogoutControllerTest extends WebTestCase
             'password' => 'test-password',
         ]);
 
-        self::assertResponseRedirects('/oeuvre');
+        self::assertResponseRedirects('/');
 
         $client->request('GET', '/login');
-        self::assertResponseRedirects('/oeuvre');
+        self::assertResponseRedirects('/');
 
         $client->request('POST', '/logout', ['_csrf_token' => 'csrf-token'], server: [
             'HTTP_ORIGIN' => 'http://localhost',

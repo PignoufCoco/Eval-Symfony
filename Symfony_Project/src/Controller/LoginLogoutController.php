@@ -13,7 +13,7 @@ final class LoginLogoutController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->getUser()) {
-            return $this->redirectToRoute('app_oeuvre_index');
+            return $this->redirectToRoute('app_accueil');
         }
 
         return $this->render('login_logout/index.html.twig', [
