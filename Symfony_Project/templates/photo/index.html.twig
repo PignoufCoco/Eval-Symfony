@@ -10,7 +10,7 @@
             <tr>
                 <th>Id</th>
                 <th>Prise de vue</th>
-                <th>Fichier</th>
+                <th>Photo</th>
                 <th>État de l’œuvre</th>
                 <th>Œuvre</th>
                 <th>Bénévole</th>
@@ -22,7 +22,9 @@
             <tr>
                 <td>{{ photo.id }}</td>
                 <td>{{ photo.datePriseVue ? photo.datePriseVue|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ photo.nomFichier }}</td>
+                <td>
+                    <img src="{{ asset('uploads/photos/' ~ photo.nomFichier) }}" alt="{{ photo.oeuvre.titre }}" class="img-thumbnail" style="width: 120px; height: 90px; object-fit: cover;" loading="lazy">
+                </td>
                 <td>{{ photo.etatOeuvre }}</td>
                 <td>{{ photo.oeuvre.titre }}</td>
                 <td>{{ photo.benevole.prenom }} {{ photo.benevole.nom }}</td>

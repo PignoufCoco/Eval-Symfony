@@ -5,6 +5,8 @@
 {% block body %}
     <h1 class="mb-4">Modifier une photo</h1>
 
+    <img src="{{ asset('uploads/photos/' ~ photo.nomFichier) }}" alt="{{ photo.oeuvre.titre }}" class="img-thumbnail mb-3" style="max-height: 200px;">
+
     {{ include('photo/_form.html.twig', {'button_label': 'Enregistrer'}) }}
 
     <a class="btn btn-outline-primary mb-2" href="{{ path('app_photo_index') }}">Retour à la liste</a>

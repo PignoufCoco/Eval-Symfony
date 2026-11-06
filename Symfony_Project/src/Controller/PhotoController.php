@@ -8,6 +8,11 @@ use App\Repository\PhotoRepository;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,6 +22,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_BENEVOLE')]
 final class PhotoController extends AbstractController
 {
+    public function __construct(private readonly Filesystem $filesystem)
+    {
+    }
+
     #[Route(name: 'app_photo_index', methods: ['GET'])]
     public function index(PhotoRepository $photoRepository): Response
     {
@@ -32,7 +41,7 @@ final class PhotoController extends AbstractController
         $form = $this->createForm(PhotoType::class, $photo);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && $this->enregistrerFichier($form, $photo)) {
             $entityManager->persist($photo);
             $entityManager->flush();
 
@@ -56,11 +65,15 @@ final class PhotoController extends AbstractController
     #[Route('/{id}/edit', name: 'app_photo_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, Photo $photo, EntityManagerInterface $entityManager): Response
     {
+        $ancienFichier = $photo->getNomFichier();
         $form = $this->createForm(PhotoType::class, $photo);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && $this->enregistrerFichier($form, $photo)) {
             $entityManager->flush();
+            if ($ancienFichier !== $photo->getNomFichier()) {
+                $this->supprimerFichier($ancienFichier);
+            }
 
             return $this->redirectToRoute('app_photo_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -78,11 +91,40 @@ final class PhotoController extends AbstractController
             try {
                 $entityManager->remove($photo);
                 $entityManager->flush();
+                $this->supprimerFichier($photo->getNomFichier());
             } catch (ForeignKeyConstraintViolationException) {
                 $this->addFlash('error', 'Suppression impossible : cet élément est encore utilisé. Modifiez d’abord les éléments associés.');
             }
         }
 
         return $this->redirectToRoute('app_photo_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    private function enregistrerFichier(FormInterface $form, Photo $photo): bool
+    {
+        $fichier = $form->get('fichier')->getData();
+        if (!$fichier instanceof UploadedFile) {
+            return true;
+        }
+
+        $nomFichier = bin2hex(random_bytes(16)).'.'.$fichier->guessExtension();
+        try {
+            $fichier->move($this->getParameter('kernel.project_dir').'/public/uploads/photos', $nomFichier);
+        } catch (FileException) {
+            $form->get('fichier')->addError(new FormError('Impossible d’enregistrer la photo. Réessayez.'));
+
+            return false;
+        }
+
+        $photo->setNomFichier($nomFichier);
+
+        return true;
+    }
+
+    private function supprimerFichier(?string $nomFichier): void
+    {
+        if ($nomFichier && preg_match('/^[a-f0-9]{32}\.(jpg|jpeg|png|gif|webp)$/D', $nomFichier)) {
+            $this->filesystem->remove($this->getParameter('kernel.project_dir').'/public/uploads/photos/'.$nomFichier);
+        }
     }
 }

@@ -14,7 +14,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/oeuvre')]
-#[IsGranted('ROLE_BENEVOLE')]
 final class OeuvreController extends AbstractController
 {
     #[Route(name: 'app_oeuvre_index', methods: ['GET'])]
@@ -26,6 +25,7 @@ final class OeuvreController extends AbstractController
     }
 
     #[Route('/new', name: 'app_oeuvre_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_BENEVOLE')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $oeuvre = new Oeuvre();
@@ -54,6 +54,7 @@ final class OeuvreController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_oeuvre_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_BENEVOLE')]
     public function edit(Request $request, Oeuvre $oeuvre, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(OeuvreType::class, $oeuvre);
@@ -72,6 +73,7 @@ final class OeuvreController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_oeuvre_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_BENEVOLE')]
     public function delete(Request $request, Oeuvre $oeuvre, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$oeuvre->getId(), $request->getPayload()->getString('_token'))) {
@@ -87,12 +89,8 @@ final class OeuvreController extends AbstractController
     }
 
     #[Route('/show_oeuvre_user', name: 'app_oeuvre_show_oeuvre_user', methods: ['GET'])]
-    public function show_oeuvre_user(OeuvreRepository $oeuvreRepository): Response
+    public function show_oeuvre_user(): Response
     {
-        {
-            return $this->render('oeuvre/index.html.twig', [
-                'oeuvres' => $oeuvreRepository->findAll(),
-            ]);
-        }
+        return $this->redirectToRoute('app_oeuvre_index');
     }
 }

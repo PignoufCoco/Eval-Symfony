@@ -8,25 +8,34 @@
     <table class="table table-striped table-hover align-middle">
         <thead class="table-light">
             <tr>
-                <th>Id</th>
+                <th>Photo</th>
                 <th>Titre</th>
                 <th>Date de création</th>
                 <th>Description</th>
                 <th>Date de destruction</th>
-                <th>Actions</th>
+                <th>Détails</th>
             </tr>
         </thead>
         <tbody>
         {% for oeuvre in oeuvres %}
             <tr>
-                <td>{{ oeuvre.id }}</td>
+                <td>
+                    {% set photo = oeuvre.photos|first %}
+                    {% if photo %}
+                        <img src="{{ asset('uploads/photos/' ~ photo.nomFichier) }}" alt="{{ oeuvre.titre }}" class="img-thumbnail" style="width: 160px; height: 110px; object-fit: cover;" loading="lazy">
+                    {% else %}
+                        <span class="text-secondary">Photo à venir</span>
+                    {% endif %}
+                </td>
                 <td>{{ oeuvre.titre }}</td>
-                <td>{{ oeuvre.dateCreation ? oeuvre.dateCreation|date('Y-m-d') : '' }}</td>
+                <td>{{ oeuvre.dateCreation ? oeuvre.dateCreation|date('d/m/Y') : '' }}</td>
                 <td>{{ oeuvre.description }}</td>
-                <td>{{ oeuvre.dateDestruction ? oeuvre.dateDestruction|date('Y-m-d') : '' }}</td>
+                <td>{{ oeuvre.dateDestruction ? oeuvre.dateDestruction|date('d/m/Y') : '' }}</td>
                 <td class="text-nowrap">
-                    <a class="btn btn-info" href="{{ path('app_oeuvre_show', {'id': oeuvre.id}) }}">Voir</a>
-                    <a class="btn btn-warning" href="{{ path('app_oeuvre_edit', {'id': oeuvre.id}) }}">Modifier</a>
+                    <a class="btn btn-info" href="{{ path('app_oeuvre_show', {'id': oeuvre.id}) }}">Voir l’œuvre</a>
+                    {% if is_granted('ROLE_BENEVOLE') %}
+                        <a class="btn btn-warning" href="{{ path('app_oeuvre_edit', {'id': oeuvre.id}) }}">Modifier</a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
@@ -37,5 +46,10 @@
         </tbody>
     </table>
 
-    <a class="btn btn-primary" href="{{ path('app_oeuvre_new') }}">Ajouter</a>
+    {% if is_granted('ROLE_BENEVOLE') %}
+        <a class="btn btn-primary" href="{{ path('app_oeuvre_new') }}">Ajouter</a>
+    {% endif %}
+    {% if not app.user %}
+        <a class="btn btn-secondary" href="{{ path('app_login') }}">Retour à la connexion</a>
+    {% endif %}
 {% endblock %}

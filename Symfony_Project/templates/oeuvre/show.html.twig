@@ -1,23 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Oeuvre{% endblock %}
+{% block title %}{{ oeuvre.titre }}{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Oeuvre</h1>
+    <h1 class="mb-4">{{ oeuvre.titre }}</h1>
+
+    <div class="row g-3 mb-4">
+        {% for photo in oeuvre.photos %}
+            <div class="col-12 col-md-6">
+                <img src="{{ asset('uploads/photos/' ~ photo.nomFichier) }}" alt="{{ oeuvre.titre }}" class="img-fluid rounded" style="max-height: 400px;" loading="lazy">
+            </div>
+        {% else %}
+            <p class="text-secondary">Aucune photo disponible pour cette œuvre pour le moment.</p>
+        {% endfor %}
+    </div>
 
     <table class="table table-striped align-middle">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ oeuvre.id }}</td>
-            </tr>
-            <tr>
-                <th>Titre</th>
-                <td>{{ oeuvre.titre }}</td>
-            </tr>
-            <tr>
                 <th>Date de création</th>
-                <td>{{ oeuvre.dateCreation ? oeuvre.dateCreation|date('Y-m-d') : '' }}</td>
+                <td>{{ oeuvre.dateCreation ? oeuvre.dateCreation|date('d/m/Y') : '' }}</td>
             </tr>
             <tr>
                 <th>Description</th>
@@ -25,14 +27,19 @@
             </tr>
             <tr>
                 <th>Date de destruction</th>
-                <td>{{ oeuvre.dateDestruction ? oeuvre.dateDestruction|date('Y-m-d') : '' }}</td>
+                <td>{{ oeuvre.dateDestruction ? oeuvre.dateDestruction|date('d/m/Y') : '' }}</td>
             </tr>
         </tbody>
     </table>
 
     <a class="btn btn-secondary" href="{{ path('app_oeuvre_index') }}">Retour à la liste</a>
+    {% if not app.user %}
+        <a class="btn btn-outline-secondary" href="{{ path('app_login') }}">Retour à la connexion</a>
+    {% endif %}
 
-    <a class="btn btn-warning" href="{{ path('app_oeuvre_edit', {'id': oeuvre.id}) }}">Modifier</a>
+    {% if is_granted('ROLE_BENEVOLE') %}
+        <a class="btn btn-warning" href="{{ path('app_oeuvre_edit', {'id': oeuvre.id}) }}">Modifier</a>
 
-    {{ include('oeuvre/_delete_form.html.twig') }}
+        {{ include('oeuvre/_delete_form.html.twig') }}
+    {% endif %}
 {% endblock %}
