@@ -5,13 +5,16 @@ namespace App\Controller;
 use App\Entity\Artiste;
 use App\Form\ArtisteType;
 use App\Repository\ArtisteRepository;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/artiste')]
+#[IsGranted('ROLE_BENEVOLE')]
 final class ArtisteController extends AbstractController
 {
     #[Route(name: 'app_artiste_index', methods: ['GET'])]
@@ -42,7 +45,7 @@ final class ArtisteController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_artiste_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_artiste_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Artiste $artiste): Response
     {
         return $this->render('artiste/show.html.twig', [
@@ -50,7 +53,7 @@ final class ArtisteController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_artiste_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_artiste_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, Artiste $artiste, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ArtisteType::class, $artiste);
@@ -68,12 +71,16 @@ final class ArtisteController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_artiste_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_artiste_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, Artiste $artiste, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$artiste->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($artiste);
-            $entityManager->flush();
+            try {
+                $entityManager->remove($artiste);
+                $entityManager->flush();
+            } catch (ForeignKeyConstraintViolationException) {
+                $this->addFlash('error', 'Suppression impossible : cet élément est encore utilisé. Modifiez d’abord les éléments associés.');
+            }
         }
 
         return $this->redirectToRoute('app_artiste_index', [], Response::HTTP_SEE_OTHER);

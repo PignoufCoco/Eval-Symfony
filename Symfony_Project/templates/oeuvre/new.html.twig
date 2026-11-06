@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Oeuvre{% endblock %}
+{% block title %}Ajouter une œuvre{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Create new Oeuvre</h1>
+    <h1 class="mb-4">Ajouter une œuvre</h1>
 
     {{ include('oeuvre/_form.html.twig') }}
 
-    <a class="btn btn-secondary" href="{{ path('app_oeuvre_index') }}">back to list</a>
+    <a class="btn btn-secondary" href="{{ path('app_oeuvre_index') }}">Retour à la liste</a>
 {% endblock %}

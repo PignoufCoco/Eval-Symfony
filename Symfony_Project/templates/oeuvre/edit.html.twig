@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Oeuvre{% endblock %}
+{% block title %}Modifier une œuvre{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Edit Oeuvre</h1>
+    <h1 class="mb-4">Modifier une œuvre</h1>
 
-    {{ include('oeuvre/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('oeuvre/_form.html.twig', {'button_label': 'Enregistrer'}) }}
 
-    <a class="btn btn-secondary" href="{{ path('app_oeuvre_index') }}">back to list</a>
+    <a class="btn btn-secondary" href="{{ path('app_oeuvre_index') }}">Retour à la liste</a>
 
     {{ include('oeuvre/_delete_form.html.twig') }}
 {% endblock %}

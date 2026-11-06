@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Oeuvre index{% endblock %}
+{% block title %}Œuvres{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">Oeuvre index</h1>
+    <h1 class="mb-4">Œuvres</h1>
 
     <table class="table table-striped table-hover align-middle">
         <thead class="table-light">
             <tr>
                 <th>Id</th>
                 <th>Titre</th>
-                <th>DateCreation</th>
+                <th>Date de création</th>
                 <th>Description</th>
-                <th>DateDestruction</th>
-                <th>actions</th>
+                <th>Date de destruction</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -25,17 +25,17 @@
                 <td>{{ oeuvre.description }}</td>
                 <td>{{ oeuvre.dateDestruction ? oeuvre.dateDestruction|date('Y-m-d') : '' }}</td>
                 <td class="text-nowrap">
-                    <a class="btn btn-info" href="{{ path('app_oeuvre_show', {'id': oeuvre.id}) }}">show</a>
-                    <a class="btn btn-warning" href="{{ path('app_oeuvre_edit', {'id': oeuvre.id}) }}">edit</a>
+                    <a class="btn btn-info" href="{{ path('app_oeuvre_show', {'id': oeuvre.id}) }}">Voir</a>
+                    <a class="btn btn-warning" href="{{ path('app_oeuvre_edit', {'id': oeuvre.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="6">no records found</td>
+                <td colspan="6">Aucun résultat.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a class="btn btn-primary" href="{{ path('app_oeuvre_new') }}">Create new</a>
+    <a class="btn btn-primary" href="{{ path('app_oeuvre_new') }}">Ajouter</a>
 {% endblock %}

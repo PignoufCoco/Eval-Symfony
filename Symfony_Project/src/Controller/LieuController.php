@@ -5,13 +5,16 @@ namespace App\Controller;
 use App\Entity\Lieu;
 use App\Form\LieuType;
 use App\Repository\LieuRepository;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/lieu')]
+#[IsGranted('ROLE_BENEVOLE')]
 final class LieuController extends AbstractController
 {
     #[Route(name: 'app_lieu_index', methods: ['GET'])]
@@ -42,7 +45,7 @@ final class LieuController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_lieu_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_lieu_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Lieu $lieu): Response
     {
         return $this->render('lieu/show.html.twig', [
@@ -50,7 +53,7 @@ final class LieuController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_lieu_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_lieu_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, Lieu $lieu, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(LieuType::class, $lieu);
@@ -68,12 +71,16 @@ final class LieuController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_lieu_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_lieu_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, Lieu $lieu, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$lieu->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($lieu);
-            $entityManager->flush();
+            try {
+                $entityManager->remove($lieu);
+                $entityManager->flush();
+            } catch (ForeignKeyConstraintViolationException) {
+                $this->addFlash('error', 'Suppression impossible : cet élément est encore utilisé. Modifiez d’abord les éléments associés.');
+            }
         }
 
         return $this->redirectToRoute('app_lieu_index', [], Response::HTTP_SEE_OTHER);

@@ -22,25 +22,29 @@ class OeuvreType extends AbstractType
             ->add('dateDestruction')
             ->add('artistes', EntityType::class, [
                 'class' => Artiste::class,
-                'choice_label' => 'id',
+                'choice_label' => 'pseudonyme',
                 'multiple' => true,
+                'by_reference' => false,
             ])
             ->add('lieux', EntityType::class, [
                 'class' => Lieu::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
             ])
             ->add('technique', EntityType::class, [
                 'class' => Technique::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
                 'multiple' => true,
+                'by_reference' => false,
             ])
             ->add('oeuvreRecouverte', EntityType::class, [
                 'class' => Oeuvre::class,
-                'choice_label' => 'id',
+                'choice_label' => 'titre',
+                'required' => false,
             ])
             ->add('recouvertePar', EntityType::class, [
                 'class' => Oeuvre::class,
-                'choice_label' => 'id',
+                'choice_label' => 'titre',
+                'required' => false,
             ])
         ;
     }
